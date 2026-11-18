@@ -1,0 +1,110 @@
+{
+  "input": "C:\\Users\\Paola\\Downloads\\GLAB-S13-JMIRANDA-2026-02.docx",
+  "fonts_by_char_count": {
+    "Calibri": 1866
+  },
+  "direct_run_formatting_runs": 56,
+  "direct_paragraph_formatting_paragraphs": 109,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 138,
+      "text": "Alumno",
+      "style": "normal"
+    },
+    {
+      "para_index": 139,
+      "text": "Alumno",
+      "style": "normal"
+    },
+    {
+      "para_index": 140,
+      "text": "Nota",
+      "style": "normal"
+    },
+    {
+      "para_index": 144,
+      "text": "Grupo",
+      "style": "normal"
+    },
+    {
+      "para_index": 147,
+      "text": "Fecha de Entrega",
+      "style": "normal"
+    },
+    {
+      "para_index": 150,
+      "text": "Docente",
+      "style": "normal"
+    },
+    {
+      "para_index": 151,
+      "text": "Jean Marco Miranda Llanos",
+      "style": "normal"
+    },
+    {
+      "para_index": 152,
+      "text": "Jean Marco Miranda Llanos",
+      "style": "normal"
+    }
+  ],
+  "examples": {
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 1,
+        "text": "",
+        "style": "normal"
+      },
+      {
+        "para_index": 8,
+        "text": "Implementar la estructura principal de una aplicaci\u00f3n de comercio electr\u00f3nico ",
+        "style": "normal"
+      },
+      {
+        "para_index": 12,
+        "text": "Revisar el texto gu\u00eda que est\u00e1 en el campus Virtual.",
+        "style": "normal"
+      },
+      {
+        "para_index": 14,
+        "text": "No aplica",
+        "style": "normal"
+      },
+      {
+        "para_index": 16,
+        "text": "En este laboratorio cada alumno trabajar\u00e1 con un equipo con Windows 10.",
+        "style": "normal"
+      }
+    ],
+    "direct_run_formatting": [
+      {
+        "para_index": 7,
+        "run_text": "OBJETIVOS:",
+        "style": "normal"
+      },
+      {
+        "para_index": 8,
+        "run_text": "Implementar la estructura principal de una aplicaci\u00f3n de comercio electr\u00f3nico ",
+        "style": "normal"
+      },
+      {
+        "para_index": 9,
+        "run_text": "SEGURIDAD:",
+        "style": "normal"
+      },
+      {
+        "para_index": 11,
+        "run_text": "FUNDAMENTO TE\u00d3RICO:",
+        "style": "normal"
+      },
+      {
+        "para_index": 12,
+        "run_text": "Revisar el texto gu\u00eda que est\u00e1 en el campus Virtual.",
+        "style": "normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

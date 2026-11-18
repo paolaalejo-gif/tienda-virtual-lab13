@@ -1,0 +1,173 @@
+LABORATORIO 13 — LIBROMUNDO
+Bitácora detallada de implementación, ejecución y evidencias
+Fecha de revisión: 16 de noviembre de 2026
+Carpeta raíz del proyecto: C:\Users\Paola\tienda-virtual-lab13
+Documento relacionado: Laboratorio_13_LibroMundo_Paola.docx
+
+PROPÓSITO DE ESTA BITÁCORA
+
+Este archivo explica cómo está organizado y cómo se ejecuta el proyecto que acompaña al informe. Resume las decisiones funcionales, indica dónde están los archivos importantes y describe una por una las evidencias insertadas en el Word.
+
+ACLARACIÓN SOBRE LAS IMÁGENES
+
+Las capturas numeradas del informe provienen del navegador local ejecutando LibroMundo, de la API REST o de archivos reales del proyecto y del panel Django Admin. En el Word se ajustaron dimensiones y se recortaron márgenes para facilitar la lectura; no se generaron pantallas ficticias. La Figura 1, titulada “Esquema de comunicación entre React, Django REST Framework y SQLite”, es un diagrama elaborado para explicar la arquitectura: no es una captura de pantalla ni se presenta como evidencia capturada. Las imágenes SVG de portadas son recursos gráficos del sitio; cuando aparecen dentro de una captura, la captura sí muestra la aplicación real ejecutándose.
+
+1. RESUMEN DEL RESULTADO
+
+LibroMundo es una primera versión funcional de un catálogo web para una librería que ofrece libros y útiles escolares. La pantalla obtiene los productos y categorías de una API Django REST Framework; el backend lee los registros de SQLite. El catálogo final tiene siete categorías y once productos.
+
+El usuario puede consultar la lista, buscar por nombre o descripción, filtrar por categoría y abrir el detalle de un producto. La interfaz contempla estados de carga, error y reintento. No se incorporaron carrito, pedidos, pagos ni cuentas de clientes porque no forman parte del alcance de esta etapa.
+
+2. ESTRUCTURA DEL PROYECTO Y UBICACIÓN DE LOS ARCHIVOS
+
+La carpeta raíz es tienda-virtual-lab13. Separa el frontend y el backend para que cada aplicación tenga dependencias y responsabilidades propias:
+
+C:\Users\Paola\tienda-virtual-lab13\
+  frontend\                 Aplicación web React y Vite
+    public\catalog\         Portadas SVG locales para los productos
+    src\
+      components\            Componentes de interfaz reutilizables
+      components\ui\         Componentes base de shadcn/ui
+      pages\                  Pantalla principal de la tienda
+      services\               Consultas HTTP a la API
+      lib\                    Utilidades de interfaz
+      App.jsx, main.jsx        Entrada y montaje de React
+      index.css, App.css       Estilos globales y de la tienda
+    evidencias\               Capturas fuente incorporadas al informe
+    package.json              Dependencias y comandos npm
+  backend\
+    manage.py                 Comandos de administración Django
+    config\                   Configuración general del proyecto
+    catalog\
+      models.py                Modelos Category y Product
+      serializers.py           Conversión de modelos a JSON
+      views.py                 ViewSets de lectura de la API
+      urls.py                  Rutas del catálogo
+      admin.py                 Listas, búsquedas y filtros de Django Admin
+      migrations\              Historial de cambios de esquema
+      management\commands\
+        seed_catalog.py         Carga reproducible del catálogo de ejemplo
+    db.sqlite3                 Base local SQLite creada por las migraciones
+  README.md                    Instrucciones resumidas de ejecución
+  .gitignore                   Exclusiones de archivos locales
+
+Archivos centrales del frontend:
+- frontend/src/pages/Storefront.jsx: coordina los datos, búsqueda, filtro y estados de la página.
+- frontend/src/services/catalogService.js: consulta categorías y productos con fetch.
+- frontend/src/components/SiteHeader.jsx: encabezado y navegación de LibroMundo.
+- frontend/src/components/CategoryFilter.jsx: botones para elegir categoría.
+- frontend/src/components/ProductList.jsx: representa la colección de tarjetas.
+- frontend/src/components/ProductCard.jsx: muestra portada y datos resumidos del producto.
+- frontend/src/components/ProductDetailsDialog.jsx: ventana de detalle accesible.
+- frontend/src/components/ui/: Button, Card, Badge, Input y Dialog de shadcn/ui.
+- frontend/src/lib/utils.ts: utilidades de clase usadas por los componentes de interfaz.
+
+Archivos centrales del backend:
+- backend/catalog/models.py: define Category y Product y la relación de categoría a productos.
+- backend/catalog/serializers.py: publica los campos de cada modelo en la respuesta JSON.
+- backend/catalog/views.py: expone listados de solo lectura y filtro por id de categoría.
+- backend/catalog/urls.py: conecta las rutas /categories/ y /products/.
+- backend/catalog/admin.py: configura las columnas, búsquedas y filtros del administrador.
+- backend/catalog/management/commands/seed_catalog.py: crea o actualiza de forma repetible los datos de ejemplo.
+- backend/catalog/migrations/0001_initial.py: crea las tablas iniciales del catálogo.
+
+3. ANÁLISIS FUNCIONAL Y DATOS DEL CATÁLOGO
+
+Rubro: librería. Nombre: LibroMundo. El catálogo se organizó en Narrativa, Diseño, Bienestar, Infantil, Tecnología, Útiles escolares y Papel y escritura. Los once registros son La ciudad de las mareas, Cartas desde el sur, Diseñar con intención, Pequeños hábitos, grandes días, El jardín de los planetas, Interfaces que acompañan, Atlas de animales andinos, Código con propósito, Cuaderno de lectura A5, Marcadores de estudio y Agenda de lecturas.
+
+Cada producto incluye nombre, descripción, precio decimal en soles, ruta pública de imagen, stock, categoría y marca de producto destacado. Las portadas ilustradas están en frontend/public/catalog/ como SVG locales y el campo image_url del backend apunta a dichas rutas. La tienda no depende de un servicio externo para esas portadas.
+
+4. PREPARACIÓN Y EJECUCIÓN EN WINDOWS
+
+Requisitos comprobados en el equipo: Node.js v24.15.0, npm 11.1.0, Python 3.12.10 y Git 2.55.0. Las dependencias de React/Vite se encuentran en frontend/package.json y el entorno Python del proyecto en backend/.venv. El proyecto usa React 19, Vite 8, Tailwind CSS 4, shadcn/ui 4, Django 6.1.3 y Django REST Framework 3.18.3. En package.json Vite se declara con el rango ^8.3.6; la compilación local informó Vite 8.3.8.
+
+Para repetir la ejecución, abrir dos ventanas de PowerShell. En ambas, comenzar desde la carpeta raíz C:\Users\Paola\tienda-virtual-lab13. No cerrar la primera terminal mientras se usa la página.
+
+Terminal 1 — preparar e iniciar Django:
+  .\backend\.venv\Scripts\python.exe .\backend\manage.py migrate
+  .\backend\.venv\Scripts\python.exe .\backend\manage.py seed_catalog
+  .\backend\.venv\Scripts\python.exe .\backend\manage.py runserver 127.0.0.1:8000
+
+La primera instrucción aplica las migraciones a SQLite. La segunda carga las siete categorías y once productos. Está diseñada para repetirse: crea o actualiza por slug de categoría y nombre de producto, por lo que permite restaurar los datos de ejemplo.
+
+Terminal 2 — instalar dependencias e iniciar React:
+  cd .\frontend
+  npm install
+  npm run dev
+
+Vite muestra la dirección local; normalmente es http://127.0.0.1:5173/. Abrirla en el navegador. Para detener los servidores, volver a cada terminal y presionar Ctrl+C.
+
+5. CÓMO SE COMUNICAN LAS PARTES
+
+Al abrir Storefront, el hook useEffect llama getCatalog. El servicio frontend/src/services/catalogService.js envía en paralelo dos solicitudes HTTP GET a /api/categories/ y /api/products/. Si la respuesta HTTP no es correcta, el servicio informa el error. La página guarda los arreglos y estados con useState; useMemo calcula los resultados visibles según el término de búsqueda y la categoría activa. AbortController cancela la petición si la página se desmonta.
+
+Django REST Framework serializa los modelos y responde JSON. El endpoint GET http://127.0.0.1:8000/api/products/ entrega los atributos del producto y datos legibles de categoría. También se admite el filtro por categoría, por ejemplo /api/products/?category=1 (el identificador real depende de la base local). GET /api/categories/ lista categorías y recuentos; GET /api/health/ informa el estado del servicio.
+
+La relación de datos es Category 1:N Product: una categoría puede agrupar varios productos y cada producto pertenece a una categoría. Product.category es una clave foránea protegida. Los campos de precio y stock tienen validaciones apropiadas para importes no negativos y existencias enteras no negativas.
+
+6. ADMINISTRACIÓN DE PRODUCTOS
+
+Los modelos Category y Product aparecen en http://127.0.0.1:8000/admin/. Para crear una cuenta administrativa propia, desde la raíz del proyecto:
+  .\backend\.venv\Scripts\python.exe .\backend\manage.py createsuperuser
+
+Seguir las preguntas de Django para definir usuario, correo opcional y contraseña; luego iniciar sesión en /admin/. En la sección Catálogo se pueden buscar y filtrar productos, consultar categoría, precio, stock y destacado, y abrir el formulario de un registro para actualizarlo.
+
+Como comprobación funcional, se cambió desde el formulario de Django Admin el stock de Agenda de lecturas de 18 a 20. El listado mostró el mensaje de actualización y el valor 20. Después de consultar de nuevo la API, el catálogo de React reflejó “20 disponibles”. La carga seed_catalog.py también quedó con stock 20 para que el estado comprobado siga siendo reproducible. La cuenta temporal usada para tomar la evidencia fue eliminada; para futuras sesiones se debe crear un superusuario propio.
+
+7. EVIDENCIAS DEL WORD, UNA POR UNA
+
+La carpeta de capturas fuente es C:\Users\Paola\tienda-virtual-lab13\frontend\evidencias\. El informe inserta las capturas en el orden siguiente y coloca una nota debajo de cada una:
+
+Figura 1 — Esquema de comunicación entre React, Django REST Framework y SQLite. Diagrama explicativo elaborado para el informe; no es captura de pantalla ni evidencia de ejecución.
+
+Evidencia 1 — 00-estructura-proyecto.png. Captura del listado local del directorio raíz que muestra frontend, backend, README.md y .gitignore. Acredita la separación general del trabajo.
+
+Evidencia 2 — 06-config-shadcn-tailwind.png. Captura del archivo components.json del frontend. Acredita la configuración de estilo, CSS y alias de shadcn/ui.
+
+Evidencia 3 — 07-dependencias-frontend.png. Captura de package.json, con dependencias y scripts disponibles para ejecutar, compilar y revisar el frontend.
+
+Evidencia 4 — 08-codigo-productcard.png. Captura del código fuente de ProductCard.jsx. Permite ver que la tarjeta recibe el producto mediante props y presenta los datos del registro.
+
+Evidencia 5 — 10-codigo-modelos-django.png. Captura de catalog/models.py, donde se observan Category, Product y la clave foránea de categoría.
+
+Evidencia 6 — 11-codigo-serializadores.png. Captura de catalog/serializers.py, que muestra los campos serializados de producto y categoría.
+
+Evidencia 7 — 05-api-productos-json.png. Captura del endpoint local /api/products/ en el navegador; enseña la respuesta JSON del backend con productos, imágenes, existencias y categorías.
+
+Evidencia 8 — 09-codigo-servicio-rest.png. Captura de catalogService.js, donde fetch consulta los endpoints y valida la respuesta HTTP.
+
+Evidencia 9 — 02-filtro-categoria.png. Captura del navegador con Útiles escolares seleccionado y dos productos visibles. Comprueba el filtrado alimentado por las categorías recibidas del backend.
+
+Evidencia 10 — 12-admin-productos.png. Captura del listado real de productos en Django Admin. Se ve la confirmación de guardado de Agenda de lecturas y su stock actualizado a 20, junto con el resto de las columnas administrativas.
+
+Evidencia 11 — recorte de 14-producto-actualizado-admin.png. Captura real de la tienda después del cambio en Admin. Se ve Agenda de lecturas con 20 disponibles, junto a productos cercanos del catálogo. El recorte solo limita el área para que esa actualización se distinga en el documento.
+
+Evidencia 12 — 01-catalogo-en-ejecucion.png. Captura de página completa del catálogo local conectado, con once productos, categorías, filtros, precios e imágenes.
+
+Evidencia 13 — 03-detalle-producto.png. Captura del diálogo abierto para Cartas desde el sur, con categoría, portada, descripción, precio y stock.
+
+Evidencia 14 — 04-vista-movil.png. Captura del sitio con viewport de 390 × 844 píxeles para comprobar la composición en pantalla estrecha.
+
+Los archivos de evidencia pueden abrirse directamente desde frontend/evidencias. La carpeta frontend/evidencias/para-informe contiene versiones recortadas y diagramas preparados para insertarse en Word; conserva el contenido visual de origen y no sustituye las capturas originales.
+
+8. VERIFICACIONES REALIZADAS
+
+- npm run build: compilación de producción finalizada correctamente; Vite generó los archivos en frontend/dist.
+- npm run lint: ESLint finalizó sin errores.
+- python manage.py check: Django reportó que no encontró problemas del proyecto.
+- python manage.py makemigrations --check --dry-run: no detectó cambios de modelo pendientes de migración.
+- seed_catalog: informó siete categorías y once productos.
+- Navegación local: API de categorías/productos, filtro por útiles escolares, detalle, diseño móvil y carga final se comprobaron en el navegador. No se reportaron errores de página durante la captura automatizada.
+- Administración: el cambio de stock se guardó en Django Admin y se verificó en la respuesta/API y la interfaz.
+- Documento: se exportó temporalmente a PDF con Microsoft Word para revisar la distribución visual de sus 25 páginas; el PDF de revisión no es uno de los entregables solicitados.
+
+9. QUÉ QUEDA FUERA DEL ALCANCE Y CÓMO CONTINUAR
+
+Esta versión es una práctica ejecutada en local con SQLite y servidores de desarrollo. No procesa compras. Para una tienda publicada se tendrían que implementar y asegurar autenticación de clientes, carrito, pedidos, pagos, manejo de secretos, base de producción, HTTPS y almacenamiento de imágenes.
+
+El proyecto no tiene URL de GitHub publicada. No se creó una dirección ficticia ni se subió el código, porque no hay conexión GitHub disponible en esta sesión. Para cerrar ese punto de la rúbrica, publicar la carpeta raíz tienda-virtual-lab13 desde una cuenta/repositorio autorizado y añadir la URL real al informe.
+
+10. ARCHIVOS ENTREGADOS
+
+- Laboratorio_13_LibroMundo_Paola.docx: guía original completada con redacción, solución, evidencias y notas debajo de las evidencias.
+- Laboratorio_13_LibroMundo_Paola.txt: esta explicación ampliada con estructura, ejecución, archivos clave, verificación y detalle de cada evidencia.
